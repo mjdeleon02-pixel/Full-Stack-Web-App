@@ -1,24 +1,23 @@
 version: '3.8'
 
 services:
-  mongo:
-    image: mongo:6
-    restart: always
-    environment:
-      MONGO_INITDB_DATABASE: flaskappdocker
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: example
-    volumes:
-      - mongo-data:/data/db
-    networks:
-      - backend
+  # mongo:
+  #   image: mongo:6
+  #   restart: always
+  #   environment:
+  #     MONGO_INITDB_DATABASE: flaskappdocker
+  #     MONGO_INITDB_ROOT_USERNAME: root
+  #     MONGO_INITDB_ROOT_PASSWORD: example
+  #   volumes:
+  #     - mongo-data:/data/db
+  #   networks:
+  #     - backend
 
   flask1:
     build: .
     environment:
       - MONGO_URI=mongodb+srv://mjdeleon02_db_user:GotlxoXkRgD0P0v7@flaskappdocker.vkjgmkx.mongodb.net/?appName=flaskappdocker
     depends_on:
-      - mongo
     networks:
       - backend
     ports:
@@ -29,7 +28,6 @@ services:
     environment:
       - MONGO_URI=mongodb+srv://mjdeleon02_db_user:GotlxoXkRgD0P0v7@flaskappdocker.vkjgmkx.mongodb.net/?appName=flaskappdocker
     depends_on:
-      - mongo
     networks:
       - backend
     ports:
@@ -48,7 +46,6 @@ services:
       - backend
 
 volumes:
-  mongo-data:
 
 networks:
   backend:
