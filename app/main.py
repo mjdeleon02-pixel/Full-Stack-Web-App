@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify, render_template, redirect, url_for
 from flask_cors import CORS
 from crud import init_db, get_items, add_item, delete_item
 from auth import auth_bp
+import os
 
 app = Flask(__name__)
 CORS(app)
