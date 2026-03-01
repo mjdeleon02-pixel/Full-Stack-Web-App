@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Simple Store Manager</title>
+  
+  <!-- Poppins Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(to right, #667eea, #764ba2);
+      color: #333;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 60px 20px;
+    }
+
+    .container {
+      max-width: 600px;
+      width: 100%;
+      text-align: center;
+    }
+
+    h1 {
+      color: #fff;
+      font-weight: 600;
+      margin-bottom: 30px;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+    }
+
+    #itemForm {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: nowrap;
+      margin-bottom: 20px;
+    }
+
+    #itemName {
+      flex: 0 0 350px;  
+      border-radius: 0.5rem;
+      border: none;
+      padding: 12px 15px;
+      font-size: 1rem;
+    }
+
+    button#addButton {
+      border-radius: 0.5rem;
+      font-weight: 500;
+      background-color: #28a745; 
+      border-color: #28a745;
+      color: #fff;
+      padding: 12px 20px;
+      font-size: 1rem;
+      transition: 0.3s;
+      flex: 0 0 auto;
+    }
+
+    button#addButton:hover {
+      background-color: #218838;
+      border-color: #218838;
+    }
+
+    #itemsList li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 20px;
+      border-radius: 0.5rem;
+      margin-bottom: 10px;
+      background-color: rgba(255, 255, 255, 0.85);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      font-weight: 500;
+    }
+
+    #itemsList li button {
+      border-radius: 0.3rem;
+      background-color: #e74c3c;
+      color: #fff;
+      border: none;
+      padding: 5px 10px;
+    }
+
+    #itemsList li button:hover {
+      background-color: #c0392b;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Simple Store Manager</h1>
+
+    <form id="itemForm" onsubmit="event.preventDefault(); addItem();">
+      <input type="text" id="itemName" placeholder="Enter item name">
+      <button id="addButton" type="submit">Add Item</button>
+    </form>
+
+    <ul id="itemsList"></ul>
+  </div>
+
+  <script>
+    const apiBase = '/api';
+
+    async function fetchItems() {
+      try {
+        const res = await fetch(`${apiBase}/items`);
+        const data = await res.json();
+        const ul = document.getElementById('itemsList');
+        ul.innerHTML = '';
+        data.forEach(item => {
+          const li = document.createElement('li');
+          li.textContent = item.name;
+
+          const btn = document.createElement('button');
+          btn.textContent = 'Delete';
+          btn.onclick = () => deleteItem(item._id);
+
+          li.appendChild(btn);
+          ul.appendChild(li);
+        });
+      } catch (err) {
+        console.error("Failed to fetch items:", err);
+      }
+    }
+
+    async function addItem() {
+      const name = document.getElementById('itemName').value.trim();
+      if (!name) return alert('Please enter a name!');
+      try {
+        await fetch(`${apiBase}/items`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name })
+        });
+        document.getElementById('itemName').value = '';
+        fetchItems();
+      } catch (err) {
+        console.error("Failed to add item:", err);
+      }
+    }
+
+    async function deleteItem(id) {
+      try {
+        await fetch(`${apiBase}/items/${id}`, { method: 'DELETE' });
+        fetchItems();
+      } catch (err) {
+        console.error("Failed to delete item:", err);
+      }
+    }
+
+    fetchItems();
+  </script>
+</body>
+</html>
