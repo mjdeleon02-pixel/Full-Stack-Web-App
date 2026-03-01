@@ -1,21 +1,20 @@
-from flask import Flask, request, jsonify, render_template, redirect, url_for
+from flask import Flask, jsonify, render_template
 from flask_cors import CORS
 from crud import init_db, get_items, add_item, delete_item
 from auth import auth_bp
-import os
 
 app = Flask(__name__)
 CORS(app)
 
-# Initialize the database
 db = init_db()
 
-# Register auth blueprint
+# Register auth Blueprint
 app.register_blueprint(auth_bp, url_prefix='/auth')
 
+# Frontend routes
 @app.route('/')
 def home_page():
-    return redirect(url_for('login_page'))  # Redirect to login page
+    return render_template('login.html')
 
 @app.route('/login')
 def login_page():
@@ -27,25 +26,21 @@ def register_page():
 
 @app.route('/app')
 def app_page():
-    return render_template('index.html') 
+    return render_template('index.html')
 
-# API routes for items
+# API routes
 @app.route('/api/items', methods=['GET'])
 def read_items():
-    items = get_items(db)
-    return jsonify(items)
+    return jsonify(get_items(db))
 
 @app.route('/api/items', methods=['POST'])
 def create_item():
     data = request.get_json()
-    new_item = add_item(db, data)
-    return jsonify(new_item)
+    return jsonify(add_item(db, data))
 
 @app.route('/api/items/<item_id>', methods=['DELETE'])
 def delete_item_route(item_id):
-    response = delete_item(db, item_id)
-    return jsonify(response)
+    return jsonify(delete_item(db, item_id))
 
 if __name__ == '__main__':
-    port = int(os.environ.get("PORT", 5000)) 
-    app.run(host='0.0.0.0', port=port)
+    app.run(host='0.0.0.0', port=5000)
