@@ -25,14 +25,17 @@ def register():
 
     return jsonify({"status": "registered"}), 201
 
-@auth_bp.route('/login', methods=['POST'])
+@app.route('/login', methods=['POST'])
 def login():
-    data = request.get_json()
-    username = data.get('username')
-    password = data.get('password')
-
+    username = request.json.get('username')
+    password = request.json.get('password')
+    
     user = db.users.find_one({"username": username})
-    if not user or not check_password_hash(user['password'], password):
-        return jsonify({"error": "Invalid credentials"}), 401
-
-    return jsonify({"status": "logged_in"}), 200
+    
+    if not user:
+        return jsonify({"error": "Invalid username or password"}), 400
+    
+    if not bcrypt.check_password_hash(user['password'], password):
+        return jsonify({"error": "Invalid username or password"}), 400
+    
+    return jsonify({"message": "Login successful"}), 200
