@@ -8,10 +8,10 @@ CORS(app)
 
 db = init_db()
 
-# Register auth Blueprint
+# Register auth blueprint with /auth prefix
 app.register_blueprint(auth_bp, url_prefix='/auth')
 
-# Frontend routes
+# Page routes
 @app.route('/')
 def home_page():
     return render_template('login.html')
