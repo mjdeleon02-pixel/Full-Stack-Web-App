@@ -26,7 +26,7 @@ def register_page():
 
 @app.route('/app')
 def app_page():
-    return render_template('index.html')  # Show the index page for items
+    return render_template('index.html') 
 
 # API routes for items
 @app.route('/api/items', methods=['GET'])
@@ -46,5 +46,5 @@ def delete_item_route(item_id):
     return jsonify(response)
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    port = int(os.environ.get("PORT", 5000)) 
     app.run(host='0.0.0.0', port=port)
